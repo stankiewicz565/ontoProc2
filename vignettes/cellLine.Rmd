@@ -17,16 +17,16 @@ output:
 
 
 
-```{r}
+```{r setup}
 suppressPackageStartupMessages({
 library(knitr)
 library(ontoProc)
 library(ontoProc2)
-cl = retrieve_semsql_conn(ontology = "cl")
-cl = semsql_to_oi(con= cl)
-go = retrieve_semsql_conn(ontology = "go")
+clcon = retrieve_semsql_conn(ontology = "cl")
+cl = semsql_to_oi(con= clcon)
+gocon = retrieve_semsql_conn(ontology = "go")
 #takes a few minutes
-go = semsql_to_oi(con= go)
+go = semsql_to_oi(con= gocon)
 library(ontologyPlot)
 library(BiocStyle)
 })
@@ -35,7 +35,7 @@ library(BiocStyle)
  The terminal command that was uses is following:
  
 Rscript pronto.R  1> pronto.log 2> pronto.err &
-```{r ,eval=FALSE}
+```{r downloadPr,eval=FALSE}
 #the code in the pronto.R
 library(ontoProc2)
 library(ontologyIndex)
@@ -45,7 +45,7 @@ pr = semsql_to_oi(con = pr)
 saveRDS(pr, file = "pr.rds", compress ='xz')
 ```
 
-```{r}
+```{r load_pr}
 pr = readRDS("~/pr.rds")
 #pr = readRDS(system.file("extdata/pr.rds", package="ontoProc2"))
 ```
@@ -58,7 +58,7 @@ kable(stab <- seur3kTab())
 
 
 
-```{r}
+```{r onto_plot_cl}
 onto_plot2(cl, stab$tag)
 ```
 
@@ -67,6 +67,7 @@ onto_plot2(cl, stab$tag)
 
 
 ```{r lksig}
+#library(magick)
 sigels = c("CL:X01"="GRIK3", "CL:X02"="NTNG1", "CL:X03"="BAGE2",
              "CL:X04"="MC4R", "CL:X05"="PAX6", "CL:X06"="TSPAN12", 
              "CL:X07"="hSHISA8", "CL:X08"="SNCG", "CL:X09"="ARHGEF28", 
@@ -80,9 +81,17 @@ connecting cell types with the genes expressed or unexpressed.
 ```{r lkdfff}
 cs = cyclicSigset(sigels)
 dim(cs)
+
+```
+
+
+
+```{r cstable}
+
 cs[c(1:5,9:13),]
 table(cs$cond)
 ```
+
 
 # Subsetting SingleR resources using ontological mapping
 
@@ -134,29 +143,28 @@ hpca_mono = subset_descendants( hpca_sce, cl, "^monocyte$" )
 table(hpca_mono$label.fine)
 ```
 
-```{r}
+```{r hpca_mono}
 table(hpca_mono$label.ont) # not much diversity
 ```
 
 
-```{r}
+```{r hpca_tcell_fine}
 hpca_tcell = subset_descendants( hpca_sce, cl, "^T cell$" )
 table(hpca_tcell$label.fine)
 ```
 
-```{r}
+```{r hpca_tcell_ont}
 table(hpca_tcell$label.ont) 
 ```
 
-```{r}
+```{r hpca_tcell_plot}
 uu = unique(hpca_tcell$label.ont)
 onto_plot2(cl, uu)
 ```
 
-```{r}
-
-dbDisconnect()
-
-
+```{r disconnect}
+DBI::dbDisconnect(clcon, shutdown = TRUE)
+DBI::dbDisconnect(gocon, shutdown = TRUE)
+#DBI::dbDisconnect(prcon, shutdown = TRUE)
 ```
 
