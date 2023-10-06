@@ -32,6 +32,14 @@ head(dbListTables(ubcon))
 tbl(ubcon, "statements")
 ```
 
+
+```{r}
+ # The line below is for loading the magick package on the channing server
+dyn.load('/app/imagemagick-7.1.0@i86-rhel7.0/lib/libMagick++-7.Q16HDRI.so.5')
+library(magick)
+```
+
+
 # Parent-child relations
 
 CRAN's ontologyIndex package provides a familiar representation that

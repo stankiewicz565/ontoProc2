@@ -19,6 +19,7 @@ output:
 
 ```{r setup}
 suppressPackageStartupMessages({
+
 library(knitr)
 library(ontoProc)
 library(ontoProc2)
@@ -31,23 +32,34 @@ library(ontologyPlot)
 library(BiocStyle)
 })
 ```
+
+
+```{r}
+ # The line below is for loading the magick package on the channing server
+dyn.load('/app/imagemagick-7.1.0@i86-rhel7.0/lib/libMagick++-7.Q16HDRI.so.5')
+library(magick)
+```
+ 
+ 
+ 
  The protein onotology is large and takes 5 minutes to download using wget on the terminal . To take the protein ontology to and object take over a hour. Due to time I have a example saved to for faster processing . Below is the code that  to put in a R script and run in the background.
  The terminal command that was uses is following:
  
 Rscript pronto.R  1> pronto.log 2> pronto.err &
 ```{r downloadPr,eval=FALSE}
 #the code in the pronto.R
-library(ontoProc2)
-library(ontologyIndex)
-pr = retrieve_semsql_conn(ontology = "pr")
-pr = semsql_to_oi(con = pr)
 
-saveRDS(pr, file = "pr.rds", compress ='xz')
+#pr = retrieve_semsql_conn(ontology = "pr")
+#pr = semsql_to_oi(con = pr)
+
+#saveRDS(pr, file = "pr.rds", compress ='xz')
 ```
 
 ```{r load_pr}
-pr = readRDS("~/pr.rds")
-#pr = readRDS(system.file("extdata/pr.rds", package="ontoProc2"))
+library(ontoProc2)
+library(ontologyIndex)
+#pr = readRDS("~/pr.rds")
+pr = readRDS(system.file("extdata/pr.rds", package="ontoProc2"))
 ```
 
 
@@ -67,7 +79,7 @@ onto_plot2(cl, stab$tag)
 
 
 ```{r lksig}
-#library(magick)
+
 sigels = c("CL:X01"="GRIK3", "CL:X02"="NTNG1", "CL:X03"="BAGE2",
              "CL:X04"="MC4R", "CL:X05"="PAX6", "CL:X06"="TSPAN12", 
              "CL:X07"="hSHISA8", "CL:X08"="SNCG", "CL:X09"="ARHGEF28", 
@@ -87,8 +99,12 @@ dim(cs)
 
 
 ```{r cstable}
-
 cs[c(1:5,9:13),]
+```
+
+
+
+```{r}
 table(cs$cond)
 ```
 
