@@ -33,7 +33,7 @@ retrieve_semsql_conn = function(ontology = "efo",
     dbname = sub(".gz$", "", zdbname)
     ztmploc = paste0(tempdir(), "/", zdbname)
     tmploc = paste0(tempdir(), "/", dbname)
-    download.file(addr, paste0(tempdir(), "/", zdbname))
+    utils::download.file(addr, paste0(tempdir(), "/", zdbname))
     gunzip(ztmploc) # file now at tmploc
     BiocFileCache::bfcadd(cache, rname=rname,
      rtype="local", fpath=tmploc, action="move")

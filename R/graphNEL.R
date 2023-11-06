@@ -23,12 +23,12 @@
 #' }
 #' @export
 make_graphNEL_from_ontology_plot <- function(x) {
-        ont_graph <- new(
+        ont_graph <- methods::new(
                 "graphAM", 
                 adjMat=x[["adjacency_matrix"]], 
                 edgemode="directed"
         )   
-        as(ont_graph, "graphNEL")
+        methods::as(ont_graph, "graphNEL")
 }
 
 #' inject linefeeds for node names for graph, with textual
